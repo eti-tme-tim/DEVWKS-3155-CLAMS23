@@ -1,0 +1,48 @@
+---
+# file: hosts_vars/dcloud_dcnm.yaml
+
+site1:
+  fabric_name: "classic-lan-fabric"
+  fabric_template: "External_Fabric"
+  csr1:
+    ip: "198.18.4.51"
+    role: "edge router"
+    serial: 9AIOFEKT4Q1
+    model: CSR1000V
+    version: "16.6.2"
+    name: "CSR-1"
+  csr2:
+    ip: "198.18.4.52"
+    role: "edge router"
+    serial: 91RVG4PMQ7J
+    model: CSR1000V
+    version: "16.6.2"
+    name: "CSR-2"
+  spine1:
+    ip: "198.18.4.201"
+    role: "core router"
+    serial: 9XBDJK1CPWA
+    model: N9K-9000v
+    version: "9.2(3)"
+    name: "Spine-1"
+  spine2:
+    ip: "198.18.4.202"
+    role: "core router"
+    serial: 9XWLTKPR6KJ
+    model: N9K-9000v
+    version: "9.2(3)"
+    name: "Spine-2"
+  leaf1:
+    ip: "198.18.4.101"
+    role: "aggregation"
+    serial: 9JMVH9DP8CJ
+    model: N9K-9000v
+    version: "9.2(3)"
+    name: "Leaf-1"
+  leaf2:
+    ip: "198.18.4.102"
+    role: "aggregation"
+    serial: 9VQPZ1V31O1
+    model: N9K-9000v
+    version: "9.2(3)"
+    name: "Leaf-2"

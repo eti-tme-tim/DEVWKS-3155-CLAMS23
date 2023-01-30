@@ -1,0 +1,82 @@
+#
+# Create OSPF routing processes on Aggregate routers
+#
+# Network Engineering First:
+#  - Enable Feature on both routers
+#  - Define OSPF process on both routers
+# 
+
+- hosts: dcnm
+  gather_facts: false
+  connection: ansible.netcommon.httpapi
+
+  collections:
+    - cisco.dcnm
+
+  vars:
+    # Need to extend timeouts because discovery process is slow
+    ansible_command_timeout: 1800
+    ansible_connect_timeout: 1800
+
+    switch_username: "{{ ansible_user }}"
+    switch_password: "{{ ansible_ssh_pass }}"
+
+    # WORKSHOP TO-DOs
+    enable_feature_template_name: CHANGE_ME
+    enable_feature_priority: 100
+    ospf_process_template_name: CHANGE_ME
+    ospf_process_priority: 200
+
+    spine1_policy_vars:
+      OSPF_TAG: CHANGE_ME
+      LOOPBACK_IP: CHANGE_ME
+    spine2_policy_vars:
+      OSPF_TAG: CHANGE_ME
+      LOOPBACK_IP: CHANGE_ME
+  
+  tasks:
+    # deploy = no, for single push at end
+    - name: Enable OSPF on both spines
+      dcnm_policy:
+        fabric: "{{ site1.fabric_name }}"
+        deploy: no
+        state: merged
+        config:
+          - name: "{{ enable_feature_template_name }}"
+            priority: "{{ enable_feature_priority }}"
+            create_additional_policy: false
+          - switch:
+            - ip: "{{ site1.spine1.ip }}"
+            - ip: "{{ site1.spine2.ip }}"
+
+    # deploy = no, for single push at end
+    - name: Enable OSPF Process on both routers
+      dcnm_policy:
+        fabric: "{{ site1.fabric_name }}"
+        deploy: no
+        state: merged
+        config:
+          - switch:
+            - ip: "{{ site1.spine1.ip }}"
+              policies:
+                - name: "{{ ospf_process_template_name }}"
+                  priority: "{{ ospf_process_priority }}"
+                  create_additional_policy: false
+                  policy_vars: "{{ spine1_policy_vars }}"
+            - ip: "{{ site1.spine2.ip }}"
+              policies:
+                - name: "{{ ospf_process_template_name }}"
+                  priority: "{{ ospf_process_priority }}"
+                  create_additional_policy: false
+                  policy_vars: "{{ spine2_policy_vars }}"
+    
+    # Save and Deploy
+    - name: Save changes to "{{ site1.fabric_name }}"
+      dcnm_rest:
+        method: POST
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ site1.fabric_name }}/config-save"
+
+    - name: Deploy changes to "{{ site1.fabric_name }}"
+      dcnm_rest:
+        method: POST
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ site1.fabric_name }}/config-deploy"

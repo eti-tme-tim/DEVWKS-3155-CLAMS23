@@ -1,0 +1,75 @@
+#
+# Configure L3 between Core Router and Aggregate
+#
+# Network Engineering Tasks:
+#  - L3 interfaces on Aggregate switches, OSPF enabled
+#
+# Note: MTU if specified must be done as a number, jumbo and default generates
+#       Ansible errors.  https://github.com/CiscoDevNet/ansible-dcnm/issues/151
+
+- hosts: dcnm
+  gather_facts: false
+  connection: ansible.netcommon.httpapi
+
+  collections:
+    - cisco.dcnm
+
+  vars:
+    # Need to extend timeouts because discovery process is slow
+    ansible_command_timeout: 1800
+    ansible_connect_timeout: 1800
+    switch_username: "{{ ansible_user }}"
+    switch_password: "{{ ansible_ssh_pass }}"
+
+    # WORKSHOP TO-DOs
+    spine1_csr1_interface_name: "Ethernet1/5"
+    spine1_csr1_interface_ip_address: 10.10.40.2
+    spine1_csr1_interface_prefix_length: 24
+
+    spine2_csr2_interface_name: "Ethernet1/5"
+    spine2_csr2_interface_ip_address: 10.10.60.2
+    spine2_csr2_interface_prefix_length: 24
+
+    freeform_config_enable_ospf_on_interface: "ip router ospf 3155 area 0.0.0.0"
+
+  tasks:
+    - name: Create L3 Routed Link between Spine 1 and CSR 1
+      dcnm_interface:
+        fabric: "{{ site1.fabric_name }}"
+        check_deploy: yes
+        state: merged
+        config:
+          - name: "{{ spine1_csr1_interface_name }}"
+            deploy: yes
+            switch:
+              - "{{ site1.spine1.ip }}"
+            type: eth
+            profile:
+              admin_state: yes
+              mode: "routed"
+              mtu: "9216"
+              ipv4_addr: "{{ spine1_csr1_interface_ip_address }}"
+              ipv4_mask_len: "{{ spine1_csr1_interface_prefix_length }}"
+              cmds:
+                - "{{ freeform_config_enable_ospf_on_interface }}"
+
+###  WORKSHOP TO-DO (duplicate Spine1/CSR1 for Spine2/CSR2)
+    - name: Create L3 Routed Link between Spine 2 and CSR 2
+      dcnm_interface:
+        fabric: "{{ site1.fabric_name }}"
+        check_deploy: yes
+        state: merged
+        config:
+          - name: "{{ spine2_csr2_interface_name }}"
+            deploy: yes
+            switch:
+              - "{{ site1.spine2.ip }}"
+            type: eth
+            profile:
+              admin_state: yes
+              mode: "routed"
+              mtu: "9216"
+              ipv4_addr: "{{ spine2_csr2_interface_ip_address }}"
+              ipv4_mask_len: "{{ spine2_csr2_interface_prefix_length }}"
+              cmds:
+                - "{{ freeform_config_enable_ospf_on_interface }}"
