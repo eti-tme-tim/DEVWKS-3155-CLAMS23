@@ -47,7 +47,7 @@
             profile:
               admin_state: yes
               mode: "routed"
-              mtu: "9216"
+              mtu: "1500"
               ipv4_addr: "{{ spine1_csr1_interface_ip_address }}"
               ipv4_mask_len: "{{ spine1_csr1_interface_prefix_length }}"
               cmds:
@@ -68,7 +68,7 @@
             profile:
               admin_state: yes
               mode: "routed"
-              mtu: "9216"
+              mtu: "1500"
               ipv4_addr: "{{ spine2_csr2_interface_ip_address }}"
               ipv4_mask_len: "{{ spine2_csr2_interface_prefix_length }}"
               cmds:
