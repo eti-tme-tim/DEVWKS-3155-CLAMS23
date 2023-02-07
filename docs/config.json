@@ -1,0 +1,66 @@
+{
+  "items": [
+    {
+      "title": "Overview",
+      "content": "README.md"
+    },
+    {
+      "title": "Learning Lab Orientation",
+      "content": "00-orientation.md"
+    },
+    {
+      "title": "Workshop Setup",
+      "content": "01-setup.md"
+    },
+    {
+      "title": "NDFC Templates Explained",
+      "content": "02-templates.md"
+    },
+    {
+      "title": "NDFC Template Example - Creating a VLAN",
+      "content": "03-example.md"
+    },
+    {
+      "title": "Workshop Challenge",
+      "content": "04-challenge.md"
+    },
+    {
+      "title": "Routing Process Automation",
+      "content": "05-routing.md"
+    },
+    {
+      "title": "Neighbor Adjacency Automation",
+      "content": "06-adjacencies.md"
+    },    
+    {
+      "title": "Summary",
+      "content": "07-summary.md"
+    }
+  ],
+  "config": {
+    "devEnv": {
+      "id": "devenv-tf-ansible",
+      "default_content":"src/"
+    },
+    "video": {},
+    "sandbox": {}
+  },
+  "meta":{
+    "active":true,
+    "slug": "",
+    "time": "90",
+      "tags": [
+        {
+          "title": "Python"
+      },
+      {
+        "title": "Coding"
+      }
+    ],
+      "authors": [{
+          "name": "Tim Miller",
+          "email": "timmil@cisco.com"
+      }
+    ]
+  }
+}
